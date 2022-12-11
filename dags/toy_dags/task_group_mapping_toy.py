@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.decorators import task_group, task
 from pendulum import datetime
+from airflow.utils.task_group import TaskGroup
 
 with DAG(
     dag_id="task_group_mapping_toy",
