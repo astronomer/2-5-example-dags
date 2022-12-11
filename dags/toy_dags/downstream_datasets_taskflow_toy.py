@@ -10,7 +10,7 @@ with DAG(
     start_date=datetime(2022, 12, 1),
     schedule=[my_dataset],
     catchup=False,
-    tags=["datasets", "taskflow"]
+    tags=["datasets", "taskflow", "toy"]
 ):
 
     # passing the Dataset as an argument to a taskflow task (2.4 feature)
