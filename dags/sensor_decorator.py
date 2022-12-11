@@ -29,7 +29,7 @@ with DAG(
             print(f"Shibe URL returned the status code {r.status_code}")
 
         # the function has to return a PokeReturnValue
-        # if is_done = True the sensor will exist successfully, if is_done=False, the sensor will either poke be rescheduled
+        # if is_done = True the sensor will exit successfully, if is_done=False, the sensor will either poke or be rescheduled
         return PokeReturnValue(is_done=condition_met, xcom_value=operator_return_value)
 
 
