@@ -7,7 +7,7 @@ with DAG(
     start_date=datetime(2022, 12, 1),
     schedule=None,
     catchup=False,
-    tags=["datasets", "taskflow"]
+    tags=["datasets", "taskflow", "toy"]
 ):
 
     @task
