@@ -10,11 +10,11 @@ with DAG(
     tags=["task_group", "toy", "dynamic_task_mapping"]
 ):
 
-    # the task group
+    # TASK GROUP 1: mapping over 1 positional argument
     @task_group(
         group_id="group1"
     )
-    def tg2(my_num):
+    def tg1(my_num):
 
         @task
         def print_num(num):
@@ -39,10 +39,64 @@ with DAG(
         # will print out a list of results from map index 2 and 3 of the add_42 task 
         print(pulled_xcom)
 
-    # creating 6 mapped task instances of the TaskGroup tg2 (2.5 feature)
-    tg_object = tg2.expand(my_num=[19, 23, 42, 8, 7, 108])
+    # creating 6 mapped task instances of the TaskGroup tg2 (2.5 feature) mapping over one positional argument
+    tg1_object = tg1.expand(my_num=[19, 23, 42, 8, 7, 108])
 
     # setting dependencies
-    tg_object >> pull_xcom()
+    tg1_object >> pull_xcom()
 
+
+    # TASK GROUP 2: mapping over 2 positional arguments, cross product
+    @task_group(
+        group_id="group2",
+    )
+    def tg2(my_num, my_string):
+
+        @task
+        def print_string(my_string):
+            return my_string
+        
+        @task
+        def add_42(num):
+            return num + 42
+        
+        print_string(my_string) >> add_42(my_num)
+
+    # creating 4 mapped task instances of the TaskGroup tg2 (2.5 feature) of 2 positional arguments
+    tg2_object = tg2.expand(my_num=[1,2], my_string=["A", "B"])
     
+
+    # TASK GROUP 3: using expand_kwargs 
+    @task_group(
+        group_id="group3",
+    )
+    def tg3(my_num, my_string):
+
+        @task
+        def print_string(my_string):
+            return my_string
+        
+        @task
+        def add_42(num):
+            return num + 42
+        
+        print_string(my_string) >> add_42(my_num)
+
+    # creating 2 mapped task instances of the TaskGroup using expand kwargs
+    # positional arguments like my_num and my_string cannot be refernced in expand kwargs
+    tg2_object = tg3.partial(my_num=4, my_string="C").expand_kwargs(
+        [
+            {
+                "tooltip" : "This taskgroup always runs all tasks",
+                "default_args": {
+                    "trigger_rule": "all_done"
+                }
+            },
+            {
+                "tooltip" : "This taskgroup needs the first task to be successful to run the second",
+                "default_args": {
+                    "trigger_rule": "all_success"
+                }
+            }
+        ]
+    )
