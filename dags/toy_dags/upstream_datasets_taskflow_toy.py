@@ -9,14 +9,14 @@ from airflow import Dataset
 from airflow.decorators import dag, task
 from pendulum import datetime
 
+
 @dag(
     start_date=datetime(2022, 12, 1),
     schedule=None,
     catchup=False,
-    tags=["datasets", "taskflow", "toy"]
+    tags=["datasets", "taskflow", "toy"],
 )
 def upstream_datasets_taskflow_toy():
-
     @task
     def get_folder_name():
         return "pictures_of_Avery"
@@ -31,9 +31,7 @@ def upstream_datasets_taskflow_toy():
 
     # you can pass the call to a task flow task to the outlets parameter
     # Update 2 to Dataset("my_blob_storage://pictures_of_Avery")
-    @task(
-        outlets=[my_dataset] # before 2.5 only Dataset objects could be passed in
-    )
+    @task(outlets=[my_dataset])  # before 2.5 only Dataset objects could be passed in
     def say_hi():
         print("hi")
 
