@@ -1,18 +1,26 @@
-from airflow import DAG, Dataset
-from airflow.decorators import task
+"""
+### Print information about an Airflow Dataset and create a new Dataset from it
+
+Downstream toy DAG that prints information about an Airflow Dataset.
+Showcases that returning a Dataset from a TaskFlow task will update the Dataset.
+"""
+
+from airflow import Dataset
+from airflow.decorators import dag, task
 from pendulum import datetime
 
 MY_FOLDER = "pictures_of_Avery"
 my_dataset = Dataset(f"my_blob_storage://{MY_FOLDER}")
 
-with DAG(
+
+@dag(
     dag_id="downstream_datasets_taskflow_toy",
     start_date=datetime(2022, 12, 1),
     schedule=[my_dataset],
     catchup=False,
-    tags=["datasets", "taskflow", "toy"]
-):
-
+    tags=["datasets", "taskflow", "toy"],
+)
+def downstream_datasets_taskflow_toy():
     # passing the Dataset as an argument to a taskflow task (2.4 feature)
     @task
     def create_new_dataset_from_dataset(my_dataset):
@@ -33,3 +41,6 @@ with DAG(
         return new_dataset
 
     create_new_dataset_from_dataset(my_dataset)
+
+
+downstream_datasets_taskflow_toy()

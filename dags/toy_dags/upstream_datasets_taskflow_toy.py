@@ -1,14 +1,21 @@
-from airflow import DAG, Dataset
-from airflow.decorators import task
+"""
+### Update a Dataset from a TaskFlow task
+
+This toy DAG shows the two ways to update a Dataset from a TaskFlow task. The Dataset
+can either be returned or provided to the outlets parameter of the task.
+"""
+
+from airflow import Dataset
+from airflow.decorators import dag, task
 from pendulum import datetime
 
-with DAG(
-    dag_id="upstream_datasets_taskflow_toy",
+@dag(
     start_date=datetime(2022, 12, 1),
     schedule=None,
     catchup=False,
     tags=["datasets", "taskflow", "toy"]
-):
+)
+def upstream_datasets_taskflow_toy():
 
     @task
     def get_folder_name():
@@ -34,4 +41,5 @@ with DAG(
     # not passed as a parameter to the task flow task itself
     my_dataset >> say_hi()
 
-    
+
+upstream_datasets_taskflow_toy()

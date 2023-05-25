@@ -1,3 +1,9 @@
+"""
+### Placeholder DAG (not for the registry)
+
+Placeholder downstream DAG for the demo.
+"""
+
 from airflow import DAG, Dataset
 from airflow.decorators import task
 from pendulum import datetime
